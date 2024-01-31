@@ -1,0 +1,9 @@
+Metadata-Version: 2.1
+Name: Movepy
+Version: 0.0.0
+Summary: Python Model based on VU 3d model in Matlab
+Author: Yiyuan Li
+License: MIT
+Requires-Python: >=3.6
+License-File: LICENSE.txt
+
