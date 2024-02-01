@@ -137,7 +137,7 @@ def join_videos():
 
     # Save the final video
     output_path = 'output.mp4'
-    write_video_with_progress(final_clip, output_path)
+    write_video_with_progress(final_clip, output_path,'h264_nvenc')
     socketio.emit('process_complete')
     return jsonify({'message': f'Video joined successfully. Output saved at {output_path}'})
 
