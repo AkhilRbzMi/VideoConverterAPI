@@ -34,49 +34,49 @@ logger = MyBarLogger()
 
 
 
-# #===============MOVIEPY=====================================================================
-# def write_video_with_progress(final_clip, output_path, codec='libx264'):
-#     total_frames = int(final_clip.fps * final_clip.duration)
-#     final_clip.write_videofile(output_path, codec=codec, verbose=False,logger=logger)
-# #==================end moviepy============================================================
-
-#=================FFMPEG==================================================================
+#===============MOVIEPY=====================================================================
 def write_video_with_progress(final_clip, output_path, codec='libx264'):
     total_frames = int(final_clip.fps * final_clip.duration)
+    final_clip.write_videofile(output_path, codec=codec, verbose=False,logger=logger)
+#==================end moviepy============================================================
 
-    # Replace moviepy write_videofile with ffmpeg command
-    command = [
-        'ffmpeg',
-        '-y',  # Overwrite output file if it exists
-        '-f', 'rawvideo',
-        '-s', f'{final_clip.size[0]}x{final_clip.size[1]}',
-        '-pix_fmt', 'rgb24',
-        '-r', str(final_clip.fps),
-        '-i', '-',
-        '-c:v', codec,
-        '-preset', 'medium',  # Adjust the preset based on your needs
-        output_path
-    ]
+# #=================FFMPEG==================================================================
+# def write_video_with_progress(final_clip, output_path, codec='libx264'):
+#     total_frames = int(final_clip.fps * final_clip.duration)
 
-    process = subprocess.Popen(command, stdin=subprocess.PIPE)
+#     # Replace moviepy write_videofile with ffmpeg command
+#     command = [
+#         'ffmpeg',
+#         '-y',  # Overwrite output file if it exists
+#         '-f', 'rawvideo',
+#         '-s', f'{final_clip.size[0]}x{final_clip.size[1]}',
+#         '-pix_fmt', 'rgb24',
+#         '-r', str(final_clip.fps),
+#         '-i', '-',
+#         '-c:v', codec,
+#         '-preset', 'medium',  # Adjust the preset based on your needs
+#         output_path
+#     ]
 
-    for i, frame in enumerate(final_clip.iter_frames(fps=final_clip.fps, dtype='uint8')):
-        process.stdin.write(frame.tobytes())
+#     process = subprocess.Popen(command, stdin=subprocess.PIPE)
+
+#     for i, frame in enumerate(final_clip.iter_frames(fps=final_clip.fps, dtype='uint8')):
+#         process.stdin.write(frame.tobytes())
         
-        # Send progress every 10 frames (adjust as needed)
-        if i % 10 == 0 and socketio:
-            progress = (i / total_frames) * 100
-            progress="{:.2f}".format(progress)
-            print("Progress===:",progress)
-            socketio.emit('progress', {'progress': progress})
-            eventlet.sleep(0)
+#         # Send progress every 10 frames (adjust as needed)
+#         if i % 10 == 0 and socketio:
+#             progress = (i / total_frames) * 100
+#             progress="{:.2f}".format(progress)
+#             print("Progress===:",progress)
+#             socketio.emit('progress', {'progress': progress})
+#             eventlet.sleep(0)
 
-    process.stdin.close()
-    process.wait()
+#     process.stdin.close()
+#     process.wait()
 
-    if socketio:
-        socketio.emit('process_complete')
-#==================================END FFMPEG===============================================
+#     if socketio:
+#         socketio.emit('process_complete')
+# #==================================END FFMPEG===============================================
 
 
 
