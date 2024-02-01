@@ -39,10 +39,10 @@ deactivate nondestructive
 if [ "$OSTYPE" = "cygwin" ] || [ "$OSTYPE" = "msys" ] ; then
     # transform D:\path\to\venv to /d/path/to/venv on MSYS
     # and to /cygdrive/d/path/to/venv on Cygwin
-    export VIRTUAL_ENV=$(cygpath "C:\Users\akhil\source\Python\MagicVideoProcessor\api_movepy\venv")
+    export VIRTUAL_ENV=$(cygpath "C:\Users\akhil\source\Python\MagicVideoProcessor\api\venv")
 else
     # use the path as-is
-    export VIRTUAL_ENV="C:\Users\akhil\source\Python\MagicVideoProcessor\api_movepy\venv"
+    export VIRTUAL_ENV="C:\Users\akhil\source\Python\MagicVideoProcessor\api\venv"
 fi
 
 _OLD_VIRTUAL_PATH="$PATH"

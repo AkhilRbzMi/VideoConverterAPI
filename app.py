@@ -6,6 +6,7 @@ from flask_cors import CORS,cross_origin
 from flask_socketio import SocketIO
 import asyncio
 import eventlet
+import subprocess
 
 app = Flask(__name__)
 #socketio = SocketIO(app, cors_allowed_origins='*')
@@ -33,11 +34,49 @@ logger = MyBarLogger()
 
 
 
-
+#===============MOVIEPY=====================================================================
 def write_video_with_progress(final_clip, output_path, codec='libx264'):
     total_frames = int(final_clip.fps * final_clip.duration)
-    final_clip.write_videofile(output_path, codec=codec, verbose=False,logger=logger)
+    final_clip.write_videofile(output_path, codec=codec,threads=-1, verbose=False,logger=logger)
+#==================end moviepy============================================================
 
+# #=================FFMPEG==================================================================
+# def write_video_with_progress(final_clip, output_path, codec='libx264'):
+#     total_frames = int(final_clip.fps * final_clip.duration)
+
+#     # Replace moviepy write_videofile with ffmpeg command
+#     command = [
+#         'ffmpeg',
+#         '-y',  # Overwrite output file if it exists
+#         '-f', 'rawvideo',
+#         '-s', f'{final_clip.size[0]}x{final_clip.size[1]}',
+#         '-pix_fmt', 'rgb24',
+#         '-r', str(final_clip.fps),
+#         '-i', '-',
+#         '-c:v', codec,
+#         '-preset', 'medium',  # Adjust the preset based on your needs
+#         output_path
+#     ]
+
+#     process = subprocess.Popen(command, stdin=subprocess.PIPE)
+
+#     for i, frame in enumerate(final_clip.iter_frames(fps=final_clip.fps, dtype='uint8')):
+#         process.stdin.write(frame.tobytes())
+        
+#         # Send progress every 10 frames (adjust as needed)
+#         if i % 10 == 0 and socketio:
+#             progress = (i / total_frames) * 100
+#             progress="{:.2f}".format(progress)
+#             print("Progress===:",progress)
+#             socketio.emit('progress', {'progress': progress})
+#             eventlet.sleep(0)
+
+#     process.stdin.close()
+#     process.wait()
+
+#     if socketio:
+#         socketio.emit('process_complete')
+# #==================================END FFMPEG===============================================
 
 
 
@@ -98,7 +137,7 @@ def join_videos():
 
     # Save the final video
     output_path = 'output.mp4'
-    write_video_with_progress(final_clip, output_path, "h264_qsv")
+    write_video_with_progress(final_clip, output_path, "hevc_qsv")
     socketio.emit('process_complete')
     return jsonify({'message': f'Video joined successfully. Output saved at {output_path}'})
 
