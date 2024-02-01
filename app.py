@@ -37,7 +37,7 @@ logger = MyBarLogger()
 #===============MOVIEPY=====================================================================
 def write_video_with_progress(final_clip, output_path, codec='libx264'):
     total_frames = int(final_clip.fps * final_clip.duration)
-    final_clip.write_videofile(output_path, codec=codec,threads=-1, verbose=False,logger=logger)
+    final_clip.write_videofile(output_path, codec=codec, verbose=False,logger=logger)
 #==================end moviepy============================================================
 
 # #=================FFMPEG==================================================================
